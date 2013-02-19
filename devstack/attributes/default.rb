@@ -1,0 +1,5 @@
+default["devstack"]["ADMIN_PASSWORD"] = "secret_admin"
+default["devstack"]["MYSQL_PASSWORD"] = "secret_mysql"
+default["devstack"]["RABBIT_PASSWORD"] = "secret_rabbit"
+default["devstack"]["SERVICE_PASSWORD"] = "secret_service"
+default["devstack"]["SERVICE_TOKEN"] = "secret_token"

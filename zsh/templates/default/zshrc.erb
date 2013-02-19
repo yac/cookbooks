@@ -1,0 +1,182 @@
+### PATH - cool zsh magic
+typeset -U path
+path=(~/bin /sbin /usr/sbin $path)
+
+home_box=alcard # different prompt for other boxes
+
+### env. vars
+export GREP_OPTIONS='--color=auto'
+export GREP_COLORS='mt=1;32:fn=1;36'
+
+## less colors
+export LESS_TERMCAP_mb=$'\E[01;30m'
+export LESS_TERMCAP_md=$'\E[01;36m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+
+### vi to rule them all
+bindkey -v 
+### key tuning
+# insert mode
+# -- urxvt 
+bindkey -v '^[[7~' vi-beginning-of-line
+bindkey -v '^[[8~' vi-end-of-line
+bindkey -v '^[[2~' vi-add-eol
+bindkey -v '^[[3~' delete-char
+bindkey -v '^E' vi-end-of-line
+# -- tty 
+bindkey -v '^[[1~' vi-beginning-of-line
+bindkey -v '^[[4~' vi-end-of-line
+bindkey -v '^[[3~' delete-char
+# command mode - 100% redundance
+# -- urxvt 
+bindkey -a '^[[7~' vi-beginning-of-line
+bindkey -a '^[[8~' vi-end-of-line
+bindkey -a '^[[2~' vi-add-eol
+bindkey -a '^[[3~' delete-char
+bindkey -a '^E' vi-end-of-line
+# -- tty 
+bindkey -a '^[[1~' vi-beginning-of-line
+bindkey -a '^[[4~' vi-end-of-line
+bindkey -a '^[[3~' delete-char
+
+# history search
+bindkey -v '^r' history-incremental-search-backward
+bindkey -a '^r' history-incremental-search-backward
+
+
+### history
+HISTFILE=~/.histfile
+HISTSIZE=5000
+SAVEHIST=25000
+setopt append_history 
+setopt inc_append_history 
+setopt extended_history 
+setopt hist_find_no_dups
+setopt hist_ignore_all_dups
+setopt hist_reduce_blanks 
+setopt hist_ignore_space
+setopt hist_no_store 
+setopt hist_no_functions
+setopt no_hist_beep
+setopt hist_save_no_dups
+
+
+### great zsh features
+setopt notify
+unsetopt beep 
+setopt correct
+setopt extendedglob # powerful completion
+setopt auto_pushd
+## completion
+setopt no_list_ambiguous # first TAB
+zmodload -i zsh/complist # this takes FUCKING AGES 
+eval `dircolors -b`
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} # musi byt po eval `dircolors -b`
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
+zstyle ':completion:*:warnings' format '%BNo %d to complete.%b'
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+
+## not exactly working autorehash
+##zstyle ':acceptline:*' rehash true
+
+## seriously, who the fuck would want to type it?!
+function precmd {
+	    rehash
+}
+
+# comlpetion menu
+#zstyle ':completion:*' menu select
+#zstyle ':completion:*' verbose yes
+#bindkey -M menuselect "a" accept-and-menu-complete
+#bindkey -M menuselect "j" down-line-or-search
+#bindkey -M menuselect "k" up-line-or-search
+
+autoload -U compinit
+compinit
+
+# exit to last mc dir
+test -f /usr/lib/mc/mc.sh && . /usr/lib/mc/mc.sh
+
+## coloured stderr - mostly sucky
+#exec 2>>(while read line; do
+#  print '\e[91m'${(q)line}'\e[0m' > /dev/tty; done &)
+
+### ALIASES
+alias ls='ls --color=auto'
+alias l='ls --color=auto'
+alias ll='ls -l'
+alias la='ls -la'
+alias c='clear'
+alias df='df -h'
+alias d='geeqie'
+alias svim='sudo vim'
+alias '..'='cd ..'
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+
+
+## command-not-found
+if [ -e /etc/zsh_command_not_found ]; then
+	. /etc/zsh_command_not_found
+fi
+
+
+#                                           __   
+#		_____________  ____   _____ _______/  |_ 
+#		\____ \_  __ \/  _ \ /     \\____ \   __\
+#		|  |_> >  | \(  <_> )  Y Y  \  |_> >  |  
+#		|   __/|__|   \____/|__|_|  /   __/|__|  
+#		|__|                      \/|__|         
+#		
+
+setopt prompt_subst # command substitution on the fly - (e) flag
+
+if [ -z "$MC_SID" ]; then # different promt for mc
+
+autoload colors && colors
+
+C_NONE="%{%b$reset_color%}" # default color
+if [ $EUID -eq 0 ] ; then
+	USER_CHAR='#'
+	# root colors
+	eval CL1='%{%B$fg[red]%}'
+	eval CL2='%{%B$fg[yellow]%}'
+	eval C_PATH='%{%B$fg[white]%}'
+	eval C_HOME_BOX='%{%B$fg[yellow]%}'
+	eval C_ALIEN_BOX='%{%B$fg[red]%}'
+	eval C_EXIT_CODE='%{%B$fg[red]%}'
+	eval C_TIME='%{%B$fg[cyan]%}'
+else
+	USER_CHAR='$'
+	# user colors
+	eval CL1='%{%B$fg[blue]%}'
+	eval CL2='%{%B$fg[cyan]%}'
+	eval C_PATH='%{%B$fg[white]%}'
+	eval C_HOME_BOX='%{%B$fg[green]%}'
+	eval C_ALIEN_BOX='%{%B$fg[yellow]%}'
+	eval C_EXIT_CODE='%{%B$fg[yellow]%}'
+	eval C_TIME='%{%B$fg[cyan]%}'
+fi 
+
+BOX=`hostname`
+if [ "$BOX" = "$home_box" ]; then
+	C_BOX=$C_HOME_BOX
+	BOX=
+else
+	C_BOX=$C_ALIEN_BOX
+fi
+
+PROMPT='${CL2}> ${CL2}${CL1}${C_PATH}%~ $C_NONE
+${CL2}-$CL1(${C_BOX}${BOX}${USER_CHAR}$CL1)$CL2-$C_NONE '
+
+RPROMPT='%(?.$C_BOX%n%b.$C_EXIT_CODE%?)${CL1} | ${C_TIME}%D{%H:%M}$C_NONE'
+else
+	# mc prompt
+	PROMPT=' %~ $USER_CHAR> '
+fi
