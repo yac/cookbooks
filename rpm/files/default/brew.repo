@@ -1,0 +1,5 @@
+[brew]
+name=Brew Buildsystem for Fedora $releasever - $basearch
+baseurl=http://download.devel.redhat.com/rel-eng/brew/fedora/$releasever/
+enabled=1
+gpgcheck=0

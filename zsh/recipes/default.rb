@@ -2,10 +2,11 @@ package "zsh" do
     action :install
 end
 
-template "/home/vagrant/.zshrc" do
-	mode 0755
-	source "zshrc.erb"
+cookbook_file "/home/vagrant/.zshrc" do
+	mode 0644
+	source "zshrc"
 	owner "vagrant"
+	group "vagrant"
 end
 
 bash "use_zsh" do

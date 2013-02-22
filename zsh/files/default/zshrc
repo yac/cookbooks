@@ -1,12 +1,13 @@
 ### PATH - cool zsh magic
 typeset -U path
-path=(~/bin /sbin /usr/sbin $path)
+path=(~/bin /sbin /usr/sbin $path $HOME/.rvm/bin)
 
 home_box=alcard # different prompt for other boxes
 
 ### env. vars
 export GREP_OPTIONS='--color=auto'
 export GREP_COLORS='mt=1;32:fn=1;36'
+#export PYTHONPATH='/home/yac/local/lib/python2.6/site-packages'
 
 ## less colors
 export LESS_TERMCAP_mb=$'\E[01;30m'
@@ -81,12 +82,10 @@ zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 zstyle ':completion:*:warnings' format '%BNo %d to complete.%b'
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
-## not exactly working autorehash
-##zstyle ':acceptline:*' rehash true
 
-## seriously, who the fuck would want to type it?!
 function precmd {
-	    rehash
+    ## seriously, who the fuck would want to type it?!
+    rehash
 }
 
 # comlpetion menu
@@ -102,10 +101,6 @@ compinit
 # exit to last mc dir
 test -f /usr/lib/mc/mc.sh && . /usr/lib/mc/mc.sh
 
-## coloured stderr - mostly sucky
-#exec 2>>(while read line; do
-#  print '\e[91m'${(q)line}'\e[0m' > /dev/tty; done &)
-
 ### ALIASES
 alias ls='ls --color=auto'
 alias l='ls --color=auto'
@@ -115,11 +110,11 @@ alias c='clear'
 alias df='df -h'
 alias d='geeqie'
 alias svim='sudo vim'
+alias x='exec startx'
 alias '..'='cd ..'
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
-
 
 ## command-not-found
 if [ -e /etc/zsh_command_not_found ]; then
@@ -152,6 +147,7 @@ if [ $EUID -eq 0 ] ; then
 	eval C_ALIEN_BOX='%{%B$fg[red]%}'
 	eval C_EXIT_CODE='%{%B$fg[red]%}'
 	eval C_TIME='%{%B$fg[cyan]%}'
+    eval C_AT='%{%b$fg[red]%}'
 else
 	USER_CHAR='$'
 	# user colors
@@ -162,20 +158,25 @@ else
 	eval C_ALIEN_BOX='%{%B$fg[yellow]%}'
 	eval C_EXIT_CODE='%{%B$fg[yellow]%}'
 	eval C_TIME='%{%B$fg[cyan]%}'
+    eval C_AT='%{%b$fg[cyan]%}'
 fi 
+eval C_BRANCH='%{%b$fg[yellow]%}'
 
-BOX=`hostname`
-if [ "$BOX" = "$home_box" ]; then
+if [ "$(hostname)" = "$home_box" ]; then
 	C_BOX=$C_HOME_BOX
-	BOX=
 else
 	C_BOX=$C_ALIEN_BOX
 fi
 
-PROMPT='${CL2}> ${CL2}${CL1}${C_PATH}%~ $C_NONE
-${CL2}-$CL1(${C_BOX}${BOX}${USER_CHAR}$CL1)$CL2-$C_NONE '
+git_branch() {
+    (git symbolic-ref --short -q HEAD || git name-rev --name-only --no-undefined --always HEAD) 2> /dev/null
+}
 
-RPROMPT='%(?.$C_BOX%n%b.$C_EXIT_CODE%?)${CL1} | ${C_TIME}%D{%H:%M}$C_NONE'
+PROMPT='${CL2}> ${CL2}${CL1}${C_PATH}%~  ${C_BRANCH}$(git_branch)$C_NONE
+${CL2}-$CL1(${C_BOX}${USER_CHAR}$CL1)$CL2-$C_NONE '
+
+RPROMPT='%(?..$C_EXIT_CODE%? ${CL1}| )$C_BOX%n${C_AT}@$C_BOX%m ${CL1}| ${C_TIME}%D{%H:%M}$C_NONE'
+
 else
 	# mc prompt
 	PROMPT=' %~ $USER_CHAR> '
