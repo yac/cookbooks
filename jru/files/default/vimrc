@@ -1,0 +1,173 @@
+" jruzicka's .vimrc of universe destruction
+
+" clear existing autocommands
+autocmd!
+
+""""" tabs
+set tabstop=4
+set shiftwidth=4
+set shiftround
+set expandtab
+"set autoindent
+"set smartindent
+set wildmode=list:longest,full " nice listing style
+" when using list, keep tabs at their full width and display `arrows':
+execute 'set listchars+=tab:' . nr2char(187) . nr2char(183)
+
+
+""""" text formatting
+set nowrap " text wrapping in code sucks
+set linebreak " when wrap, do it in a sane way
+set formatoptions=rqn1
+set textwidth=78
+set cursorline
+
+
+""""" colors & syntax
+syntax enable
+"let g:solarized_termcolors=256
+set background=dark
+"colo vividchalk " color scheme
+let c_space_errors = 1
+
+
+""""" status line
+set laststatus=2
+set stl=%r\ %m%f\ %y%=\[%{&ff}]\ [%l,%c]\ %P\ 
+" display the current mode and partially-typed commands in the status line:
+set showmode
+set showcmd
+set shortmess+=r " [RO] instead of [readonly]
+
+""""" history & viminfo
+set viminfo='10,/10,"100,:1000,f1,h " allmighty viminfo
+set history=50 " remember 50 history (20 default)
+
+""""" mouse on
+set mouse=a
+
+""""" filetype srckings
+filetype on
+"filetype plugin on
+"filetype plugin indent on
+
+" auto format human-language files
+autocmd FileType mail,human,tex setlocal formatoptions+=t textwidth=78
+
+" for C-like programming, have automatic indentation and {} autoinsertation
+autocmd FileType c,cpp,php setlocal cindent
+autocmd FileType c,cpp call SuperTabSetDefaultCompletionType("<c-x><c-u>")
+"   \ | inoremap { {<CR>}<Esc>O
+
+" smartindent when usefull
+"autocmd FileType ruby,lua,perl setlocal smartindent
+
+" for HTML format text bud leave long lines alone when editing
+autocmd FileType html setlocal formatoptions+=tl
+
+" use geniue tab characters in selected files
+autocmd FileType html,css,make,php setlocal noexpandtab
+
+" use 8spaced tab in makefiles
+autocmd FileType make setlocal noexpandtab shiftwidth=8 tabstop=8
+
+" languages using tabs
+autocmd FileType haskell setlocal expandtab
+
+" languages hating tabs
+autocmd FileType factor setlocal expandtab
+
+" .md is Markdown, not modula (dafuq?!)
+autocmd BufRead,BufNewFile *.md set filetype=markdown
+
+"""" persistent undo
+set undofile                " Save undo's after file closes
+set undodir=$HOME/.vim/undo " where to save undo histories
+"set undolevels=1000         " How many undos
+"set undoreload=10000        " number of lines to save for undo
+
+""""" search & replace
+set ignorecase
+set smartcase
+set incsearch
+set gdefault " assume the /g flag on :s substitutions
+
+"""" completion
+set completeopt=menu,menuone,longest,preview
+
+"""" interactivity
+set confirm
+
+""""" keys
+set whichwrap=h,l,~,[,] " let these wrap over lines
+set backspace=eol,start,indent " let <BkSpc> delete everything
+
+
+""""" key mappings 
+
+" tab switch (lmap doesn't work as expected - wtf needs to be examined)
+map <C-l> :tabnext<CR>
+map! <C-l> <Esc>:tabnext<CR>
+map <C-h> :tabprev<CR>
+map! <C-h> <Esc>:tabprev<CR>
+
+" walk wrapped lines by cursor keys
+map <down> gj
+map <up> gk
+
+" <C-e> skips to eol
+imap <C-e> <End>
+
+" make some use of redundant keys
+noremap <Space> <PageDown>
+noremap <BS> <PageUp>
+noremap - <PageUp>
+noremap <Ins> 2<C-Y>
+noremap <Del> 2<C-E>
+" [<Space> by default is like l, <BkSpc> like h, and - like k.]
+" [<Ins> by default is like i, and <Del> like x.]
+
+
+" use Ctrl+N/Ctrl+P to cycle through files:
+nnoremap <C-N> :next<CR>
+nnoremap <C-P> :prev<CR>
+" [<Ctrl>+N by default is like j, and <Ctrl>+P like k.]
+
+" have <F1> prompt for a help topic from any mode
+nnoremap <F1> :help<Space>
+vmap <F1> <C-C><F1>
+omap <F1> <C-C><F1>
+map! <F1> <C-C><F1>
+
+" have Q reformat the current paragraph (or selected text if there is any):
+nnoremap Q gqap
+vnoremap Q gq
+
+" have Y behave analogously to D and C rather than to dd and cc (which is
+" already done by yy):
+noremap Y y$
+
+" ctags db
+"map <F11> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+
+""" toggles
+" list
+nnoremap <F2> :set invlist!<CR>
+" highlight
+nnoremap <F3> :set invhls!<CR>
+" run this file
+nnoremap <F5> :w<CR>:make<CR>
+nnoremap <CR> :w<CR>:make!<CR>
+" change directory to current file
+nnoremap <F9> :lchdir %:p:h<CR>:pwd<CR>
+" numbering
+nnoremap <F11> :set invnu!<CR>
+
+" cycle windows where possible
+nnoremap <F6> <C-W>w
+nnoremap <S-F6> <C-W>W
+" next tab
+nnoremap <F7> :tabnext<CR>
+" autoformatting
+nnoremap <F8> :set fo+=t<CR> 
+nnoremap <C-F8> :set fo-=t<CR> 

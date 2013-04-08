@@ -8,9 +8,14 @@ package "tig" do
 end
 
 git "/home/vagrant/devstack" do
-    user "vagrant"
     repository "https://github.com/openstack-dev/devstack.git"
     action :sync
+end
+
+directory "/home/vagrant/devstack" do
+    owner "vagrant"
+    group "vagrant"
+    recursive true
 end
 
 template "/home/vagrant/devstack/localrc" do
@@ -20,10 +25,10 @@ template "/home/vagrant/devstack/localrc" do
 	variables(node["devstack"])
 end
 
-bash "fix_glance_bullshit" do
-	user "vagrant"
-	cwd "/home/vagrant/devstack"
-	code <<-EOH
-		sed -r -i 's/(iniset \$GLANCE_API_CONF DEFAULT notifier_strategy) qpid/\1 noop/' lib/glance
-	EOH
-end
+#bash "fix_glance_fail" do
+	#user "vagrant"
+	#cwd "/home/vagrant/devstack"
+	#code <<-EOH
+		#sed -r -i 's/(iniset \$GLANCE_API_CONF DEFAULT notifier_strategy) qpid/\1 noop/' lib/glance
+	#EOH
+#end

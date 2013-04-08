@@ -1,0 +1,8 @@
+# Place this file in your /etc/yum.repos.d/ directory
+
+[fedora-openstack-grizzly]
+name=OpenStack Grizzly Repository for Fedora
+baseurl=http://repos.fedorapeople.org/repos/openstack/openstack-grizzly/fedora-$releasever/
+enabled=1
+skip_if_unavailable=1
+gpgcheck=0

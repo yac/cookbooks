@@ -10,8 +10,7 @@ cookbook_file "/home/vagrant/.zshrc" do
 end
 
 bash "use_zsh" do
-	user "vagrant"
 	code <<-EOH
-        sudo usermod -s /bin/zsh vagrant 
+        usermod -s /bin/zsh vagrant 
 	EOH
 end

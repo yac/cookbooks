@@ -1,13 +1,15 @@
 ### PATH - cool zsh magic
 typeset -U path
-path=(~/bin /sbin /usr/sbin $path $HOME/.rvm/bin)
+path=(~/bin $path $HOME/.rvm/bin /sbin /usr/sbin)
 
 home_box=alcard # different prompt for other boxes
+
 
 ### env. vars
 export GREP_OPTIONS='--color=auto'
 export GREP_COLORS='mt=1;32:fn=1;36'
-#export PYTHONPATH='/home/yac/local/lib/python2.6/site-packages'
+export kerbuser=jruzicka
+
 
 ## less colors
 export LESS_TERMCAP_mb=$'\E[01;30m'
@@ -115,6 +117,9 @@ alias '..'='cd ..'
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
+alias sy='sudo yum'
+alias syt='sudo yum --enablerepo updates-testing'
+alias syi='sudo yum install'
 
 ## command-not-found
 if [ -e /etc/zsh_command_not_found ]; then

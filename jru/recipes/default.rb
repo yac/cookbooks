@@ -1,7 +1,23 @@
 bash "yum_install_cool_stuff" do
    code <<-EOH
-   yum install -y git tig ncdu tree atool
+   yum install -y vim git tig ncdu tree atool tmux mc ack atool htop
    EOH
+end
+
+cookbook_file "/home/vagrant/.tmux.conf" do
+    action :create
+    source "tmux.conf"
+    owner "vagrant"
+    group "vagrant"
+    mode 00644
+end
+
+cookbook_file "/home/vagrant/.vimrc" do
+    action :create
+    source "vimrc"
+    owner "vagrant"
+    group "vagrant"
+    mode 00644
 end
 
 cookbook_file "/home/vagrant/.gitconfig" do
