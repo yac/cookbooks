@@ -6,8 +6,12 @@
     hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
     type = cat-file -t
     dump = cat-file -p
+    edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
+    add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
 [user]
     name = Jakub Ruzicka
     email = jruzicka@redhat.com
 [color]
     ui = true
+[gitreview]
+    username = jruzicka

@@ -12,13 +12,19 @@ git "/home/vagrant/devstack" do
     action :sync
 end
 
-directory "/home/vagrant/devstack" do
-    owner "vagrant"
-    group "vagrant"
-    recursive true
+execute "chown" do
+    command "chown -R vagrant /home/vagrant/devstack"
 end
 
+# doesn't seem to work
+#directory "/home/vagrant/devstack" do
+    #owner "vagrant"
+    #group "vagrant"
+    #recursive true
+#end
+
 template "/home/vagrant/devstack/localrc" do
+    action :create_if_missing
 	mode 0755
 	owner "vagrant"
 	source "localrc.erb"

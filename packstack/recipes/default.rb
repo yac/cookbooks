@@ -6,6 +6,8 @@ git "/home/vagrant/packstack" do
     user "vagrant"
     group "vagrant"
     repository "https://github.com/stackforge/packstack.git"
+    # when cloning manually, don't forget to:
+    # git submodule update --init
     revision "folsom"
     enable_submodules true
     action :sync

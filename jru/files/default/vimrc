@@ -44,7 +44,7 @@ set viminfo='10,/10,"100,:1000,f1,h " allmighty viminfo
 set history=50 " remember 50 history (20 default)
 
 """"" mouse on
-set mouse=a
+"set mouse=a
 
 """"" filetype srckings
 filetype on
@@ -81,10 +81,12 @@ autocmd FileType factor setlocal expandtab
 autocmd BufRead,BufNewFile *.md set filetype=markdown
 
 """" persistent undo
-set undofile                " Save undo's after file closes
-set undodir=$HOME/.vim/undo " where to save undo histories
-"set undolevels=1000         " How many undos
-"set undoreload=10000        " number of lines to save for undo
+if version >= 703
+    set undofile                " Save undo's after file closes
+    set undodir=$HOME/.vim/undo " where to save undo histories
+    "set undolevels=1000         " How many undos
+    "set undoreload=10000        " number of lines to save for undo
+endif
 
 """"" search & replace
 set ignorecase
